@@ -4,10 +4,10 @@ pygame.init()
 screen = pygame.display.set_mode((600, 360)) # Create a window of size 800x600
 pygame.display.set_caption("My Game") # Set the window title
 
-pygame.display.set_icon(pygame.image.load('game1/images/pig.png')) # Set and load the window icon
-pig = pygame.image.load('game1/images/pig.png') # Load an image
+pygame.display.set_icon(pygame.image.load('my-project/game1/images/pig.png')) # Set and load the window icon
+pig = pygame.image.load('my-project/game1/images/pig.png') # Load an image
 pig = pygame.transform.scale(pig, (50, 50)) # Scale the image to 100x100 pixels
-backgroud = pygame.image.load('game1/images/bg.png')
+backgroud = pygame.image.load('my-project/game1/images/bg.png')
 
 
 running = True
