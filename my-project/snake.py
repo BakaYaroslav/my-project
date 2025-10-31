@@ -14,8 +14,10 @@ clock = pygame.time.Clock() #таймер фпс
 
 
 colors = { 
-    "snake_head": (0,255,0),   # зелений
-    "snake_tall": (0,200,0),   # зелений более темный
+    "bg1":(170, 215, 81),  # светло-зеленый
+    "bg2":(162, 209, 73),  # темно-з
+    "snake_head": (0, 0, 255),   # синий
+    "snake_tall": (0, 100, 255),   # более темный синий
     "apple": (255, 0, 0,)    # красный
 }
 snake_pos = {
@@ -65,8 +67,16 @@ while game_end:
             elif event.key == pygame.K_s and snake_pos["y_change"] == 0:
                 snake_pos["x_change"] = 0 
                 snake_pos["y_change"] = snake_speed
-     # draw snake  
-    display.fill((0,0,0)) #что бы змейка не оставляла безконечный след
+     # draw background 
+    
+    for x in range(0, width, 10):  # рисуем сетку
+        for y in range(0, height, 10):
+            if (x + y) % 20 == 0:
+                pygame.draw.rect(display, colors["bg1"], [x, y, 10, 10])
+            else:
+                pygame.draw.rect(display, colors["bg2"], [x, y, 10, 10])
+        # движение змейки
+    
     ilx = snake_pos["x"]
     ily = snake_pos["y"]
              
@@ -74,8 +84,8 @@ while game_end:
     snake_pos["y"] += snake_pos["y_change"]
     
     for i in range(len(snake_tails) -1, 0, -1): # обновление хвоста с начала до конца
-        snake_tails[i][0] = snake_tails[i-1][0]
-        snake_tails[i][1] = snake_tails[i-1][1]
+        snake_tails[i][0] = snake_tails[i-1][0] # x-координата i-го сегмента хвоста
+        snake_tails[i][1] = snake_tails[i-1][1] # y-координата i-го сегмента хвоста
     if snake_tails:
         
         snake_tails[0][0] = ilx
@@ -112,6 +122,7 @@ while game_end:
         'y': round(random.randrange(0, height - snake_size[1]) / 10) * 10,
         
         }
+    
     for i in range(len(snake_tails)): # обновление хвоста с начала до конца
         if(snake_pos["x"] + snake_pos["x_change"] == snake_tails[i][0]
            and snake_pos ['y'] + snake_pos["y_change"] == snake_tails[i][1]):
