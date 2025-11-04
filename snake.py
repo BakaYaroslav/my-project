@@ -10,7 +10,9 @@ pygame.display.update()
 pygame.display.set_caption("Snake Game")
 
 game_end = False
+game_end2 = False
 clock = pygame.time.Clock() #таймер фпс
+
 
 font_color = (245, 245, 245)
 colors = { 
@@ -18,6 +20,8 @@ colors = {
     "bg2":(162, 209, 73),  # темно-з
     "snake_head": (0, 0, 255),   # синий
     "snake_tall": (0, 100, 255),   # более темный синий
+    "snake_tall2": (240, 0, 0),   # красный
+    "snake_head2": (200, 0, 0),   # более темный красный
     "apple": (255, 0, 0,)    # красный
 }
 snake_pos = {
@@ -25,6 +29,7 @@ snake_pos = {
     "y": 240,
     "x_change": 10,
     "y_change": 0,
+
 }
 
 snake_speed = 10
@@ -37,8 +42,28 @@ snake_tails = [
     [snake_pos["x"] - 20, snake_pos["y"]],
     [snake_pos["x"] - 30, snake_pos["y"]]
 ]
+
+snake_pos2 = {
+    "x": 520,
+    "y": 240,
+    "x_change": -10,
+    "y_change": 0,
+}
+
+snake_speed2 = 10
+
+snake_size2 = (10, 10)
+
+
+snake_tails2 = [
+    [snake_pos2["x"] + 10, snake_pos2["y"]],
+    [snake_pos2["x"] + 20, snake_pos2["y"]],
+    [snake_pos2["x"] + 30, snake_pos2["y"]]
+]
 apple_size = (10, 10) 
 apple_eaten = 0
+apple_eaten1 = 0
+apple_eaten2 = 0
 # рандомный спавн для яблочек
 apple_pos = {
     'x': round(random.randrange(0, width - snake_size[0]) / 10)* 10,
@@ -76,23 +101,24 @@ while run_menu:
     
     for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                game_end = False  
+                pygame.quit()
+                quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if player1_rect.collidepoint(event.pos): # collidepoint проверяет нажатие на кнопку
                     run_menu = False
+                    game_end = True
+                elif player2_rect.collidepoint(event.pos): 
+                    run_menu = False
+                    game_end2 = True
                 elif exit_rect.collidepoint(event.pos):
                     run_menu = False
-                    game_end = False
                     pygame.quit()
+                    quit() 
                      
     pygame.display.update()
     clock.tick(30)
-                    
-                    
-                
-                    
+                              
 # запуск игры при нажатии на кнопку player1
-game_end = True
 
 while game_end:
 
@@ -108,7 +134,7 @@ while game_end:
             game_end = False        
         elif event.type == pygame.KEYDOWN:  
             if event.key == pygame.K_a and snake_pos["x_change"] == 0:
-                snake_pos["x_change"] = -snake_speed # смещение влево на 10 пикселей заданных ранее
+                snake_pos["x_change"] = -snake_speed
                 snake_pos["y_change"] = 0
             elif event.key == pygame.K_d and snake_pos["x_change"] == 0:
                 snake_pos["x_change"] = snake_speed 
@@ -209,7 +235,191 @@ while game_end:
     if(snake_pos["x"] < 0 or snake_pos["x"] > width -10 or
         snake_pos["y"] < 0 or snake_pos["y"] > height -10):
         game_end = False
+    pygame.display.update()
+    clock.tick(30)
+
+
+while game_end2:   
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            game_end2 = False        
+        elif event.type == pygame.KEYDOWN:  
+            if event.key == pygame.K_LEFT and snake_pos2["x_change"] == 0:
+                snake_pos2["x_change"] = -snake_speed2
+                snake_pos2["y_change"] = 0
+            elif event.key == pygame.K_RIGHT and snake_pos2["x_change"] == 0:
+                snake_pos2["x_change"] = snake_speed2 
+                snake_pos2["y_change"] = 0
+            elif event.key == pygame.K_UP and snake_pos2["y_change"] == 0:
+                snake_pos2["x_change"] = 0 
+                snake_pos2["y_change"] = -snake_speed2
+            elif event.key == pygame.K_DOWN and snake_pos2["y_change"] == 0:
+                snake_pos2["x_change"] = 0 
+                snake_pos2["y_change"] = snake_speed2
+                     
+            elif event.key == pygame.K_a and snake_pos["x_change"] == 0:
+                snake_pos["x_change"] = -snake_speed 
+                snake_pos["y_change"] = 0
+            elif event.key == pygame.K_d and snake_pos["x_change"] == 0:
+                snake_pos["x_change"] = snake_speed 
+                snake_pos["y_change"] = 0
+            elif event.key == pygame.K_w and snake_pos["y_change"] == 0:
+                snake_pos["x_change"] = 0 
+                snake_pos["y_change"] = -snake_speed
+            elif event.key == pygame.K_s and snake_pos["y_change"] == 0:
+                snake_pos["x_change"] = 0 
+                snake_pos["y_change"] = snake_speed
+                
+    # draw background 
+    for x in range(0, width, 10):  # рисуем сетку
+        for y in range(0, height, 10):
+            if (x + y) % 20 == 0:
+                pygame.draw.rect(display, colors["bg1"], [x, y, 10, 10])
+            else:
+                pygame.draw.rect(display, colors["bg2"], [x, y, 10, 10])
+                
+    # движение змейки 1
+    
+    ilx = snake_pos["x"]
+    ily = snake_pos["y"]
+
+    snake_pos["x"] += snake_pos["x_change"]
+    snake_pos["y"] += snake_pos["y_change"]
+
+    if len(snake_tails) > 0:
+        for i in range(len(snake_tails)-1, 0, -1):
+            snake_tails[i][0] = snake_tails[i-1][0]
+            snake_tails[i][1] = snake_tails[i-1][1]
+        snake_tails[0][0] = ilx
+        snake_tails[0][1] = ily
+    else:
+        snake_tails.append([last_tail])
+
+    last_tail1 = snake_tails[-1] if snake_tails else [ilx, ily]
+
+    # движение змейки 2    
         
+    ilx2 = snake_pos2["x"]
+    ily2 = snake_pos2["y"]
+
+    snake_pos2["x"] += snake_pos2["x_change"]
+    snake_pos2["y"] += snake_pos2["y_change"]
+
+    if len(snake_tails2) > 0:
+        for i in range(len(snake_tails2)-1, 0, -1):
+            snake_tails2[i][0] = snake_tails2[i-1][0]
+            snake_tails2[i][1] = snake_tails2[i-1][1]
+        snake_tails2[0][0] = ilx2
+        snake_tails2[0][1] = ily2
+
+    if snake_tails2:
+        last_tail2= snake_tails2[-1]
+    else:
+        last_tail2 = [snake_pos2["x"], snake_pos2["y"]]
+        snake_tails2.append(last_tail2)
+        
+    last_tail2 = snake_tails2[-1] if snake_tails2 else [ilx2, ily2]
+
+    # рисуем хвост змеи 1
+    for t in snake_tails:
+        pygame.draw.rect(display, colors["snake_tall"], [
+            t[0],
+            t[1],
+            snake_size[0],
+            snake_size[1]])
+        # рисуем хвост змеи 2
+        for t in snake_tails2:
+            pygame.draw.rect(display, colors["snake_tall2"], [
+                t[0],
+                t[1],
+                snake_size2[0],
+                snake_size2[1]])
+            
+        # рисуем голову змеи 1
+        pygame.draw.rect(display, colors["snake_head"], [
+            snake_pos["x"],
+            snake_pos["y"],
+            snake_size[0],
+            snake_size[1]])
+        # рисуем голову змеи 2
+        pygame.draw.rect(display, colors["snake_head2"], [
+            snake_pos2["x"],
+            snake_pos2["y"],
+            snake_size2[0],
+            snake_size2[1]])
+        # рисуем яблочки
+        pygame.draw.rect(display, colors["apple"], [
+            apple_pos["x"],
+            apple_pos["y"],
+            apple_size[0],
+            apple_size[1]])
+        '''text = (f"Apples: {apple_eaten1}   L: {len(snake_tails)}   Apples2: {apple_eaten2}   L2: {len(snake_tails2)}")
+        text_surface = font.render(text, True, (245,245,245)) # белый цвет текста
+        display.blit(text_surface, (10, 10))'''
+
+        # проверка змейка на той ли позиции что и яблоко
+        ate_by_p1 = (snake_pos["x"] == apple_pos['x'] and snake_pos["y"] == apple_pos['y'])
+        ate_by_p2 = (snake_pos2["x"] == apple_pos['x'] and snake_pos2["y"] == apple_pos['y'])
+
+        if ate_by_p1 or ate_by_p2:
+            if ate_by_p1:
+                apple_eaten1 += 1
+                snake_tails.append([last_tail1[0], last_tail1[1]])
+            if ate_by_p2:
+                apple_eaten2 += 1
+                snake_tails2.append([last_tail2[0], last_tail2[1]])
+            if apple_pos != snake_pos or snake_tails:
+                apple_pos = {
+                'x': round(random.randrange(0, width - snake_size[0]) / 10) * 10,
+                'y': round(random.randrange(0, height - snake_size[1]) / 10) * 10,
+                }
+            if [apple_pos['x'], apple_pos['y']] not in snake_tails and (apple_pos['x'] != snake_pos['x'] or apple_pos['y'] != snake_pos['y']):
+                [apple_pos['x'], apple_pos['y']] not in snake_tails2 and (apple_pos['x'] != snake_pos2['x'] or apple_pos['y'] != snake_pos2['y'])
+                pass
+
+
+        # Player 1: самозіткнення + зіткнення з player2
+
+        for t in snake_tails[1:]:
+            if snake_pos["x"] == t[0] and snake_pos["y"] == t[1]:
+                game_end2 = False
+                break
+        for t in snake_tails2:
+            if snake_pos["x"] == t[0] and snake_pos["y"] == t[1]:
+                game_end2 = False
+                break
+        # Player 2: самозіткнення + зіткнення з player1
+
+        for t in snake_tails2[1:]:
+            if snake_pos2["x"] == t[0] and snake_pos2["y"] == t[1]:
+                game_end2 = False
+                break
+        for t in snake_tails:
+            if snake_pos2["x"] == t[0] and snake_pos2["y"] == t[1]:
+                game_end2 = False
+                break
+        # телепорт змеи если она покидает екран
+    if snake_pos["x"] < -snake_size[0]:
+        snake_pos['x'] = width - 10
+    if snake_pos2["x"] < -snake_size2[0]:
+        snake_pos2['x'] = width - 10
+            
+    elif snake_pos["x"] > width - 10:
+        snake_pos["x"] = 0
+    if snake_pos2["x"] > width - 10:
+        snake_pos2["x"] = 0
+            
+    elif snake_pos["y"] < -snake_size[1]:
+        snake_pos['y'] = height - 10
+    if snake_pos2["y"] < -snake_size2[1]:
+        snake_pos2['y'] = height - 10
+            
+    elif snake_pos["y"] > height - 10:
+        snake_pos["y"] = 0
+    if snake_pos2["y"] > height - 10:
+        snake_pos2["y"] = 0
+                    
+            
     pygame.display.update()
     clock.tick(30)  #ограничение фпс
 pygame.quit()
