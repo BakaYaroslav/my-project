@@ -25,7 +25,7 @@ colors = {
     "apple": (255, 0, 0,)    # красный
 }
 snake_pos = {
-    "x": 220,
+    "x": 120,
     "y": 240,
     "x_change": 10,
     "y_change": 0,
@@ -82,17 +82,22 @@ player1_rect = player1_img.get_rect(center=(width//2, 150))
 player2_rect = player2_img.get_rect(center=(width//2, 250))
 exit_rect = exit_img.get_rect(center=(width//2, 350))
 
+dark_bg = pygame.Surface((width, height))
+dark_bg.fill((0, 0, 0))
+dark_bg.set_alpha(100)
+
 
 
 font = pygame.font.SysFont("Arial", 24,)
 
 font_menu = pygame.font.SysFont("Arial", 48)
 
-
+dark_bg = pygame.Surface((width, height), pygame.SRCALPHA)
+dark_bg.fill((0, 0, 0, 180))  # Прозрачное затемнение
 
 run_menu = True
 while run_menu:
-     
+  
     bg_img = pygame.transform.scale(bg_img, (width, height))
     display.blit(bg_img, (0, 0))
     text_surface = font_menu.render("The Snake Game", True, font_color)
@@ -234,12 +239,29 @@ while game_end:
     elif(snake_pos["y"] > height -10):
         snake_pos["y"] = 0'''
     # конец игры если змейка выходит за границы экрана
+    
     if(snake_pos["x"] < 0 or snake_pos["x"] > width -10 or
         snake_pos["y"] < 0 or snake_pos["y"] > height -10):
         game_end = False
     pygame.display.update()
     clock.tick(30)
-
+    
+    last_frame = display.copy()
+    if game_end == False:
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+            bg_img = pygame.transform.scale(bg_img, (width, height))
+            game_over_text = font_menu.render("Game Over", True, (0,0,200))
+            score_text = font.render(f"Your Score: {apple_eaten}", True, (255,255,255))
+            display.blit(last_frame, (0, 0)) 
+            display.blit(dark_bg, (0, 0)) 
+            display.blit(game_over_text, (width//2 - game_over_text.get_width()//2, height//2 - 50))
+            display.blit(score_text, (width//2 - score_text.get_width()//2, height//2 + 10))
+            pygame.display.update()
+            clock.tick(30)
 
 while game_end2:   
     for event in pygame.event.get():
@@ -381,48 +403,74 @@ while game_end2:
 
 
 
-        # Player 1: самозіткнення + зіткнення з player2
+        # Player 1: 
 
         for t in snake_tails[1:]:
             if snake_pos["x"] == t[0] and snake_pos["y"] == t[1]:
                 game_end2 = False
-                break
+
         for t in snake_tails2:
             if snake_pos["x"] == t[0] and snake_pos["y"] == t[1]:
                 game_end2 = False
-                break
-        # Player 2: самозіткнення + зіткнення з player1
+
+
+        # Player 2:
 
         for t in snake_tails2[1:]:
             if snake_pos2["x"] == t[0] and snake_pos2["y"] == t[1]:
                 game_end2 = False
-                break
+
         for t in snake_tails:
             if snake_pos2["x"] == t[0] and snake_pos2["y"] == t[1]:
                 game_end2 = False
-                break
+     
         # телепорт змеи если она покидает екран
-    if snake_pos["x"] < -snake_size[0]:
-        snake_pos['x'] = width - 10
-    if snake_pos2["x"] < -snake_size2[0]:
-        snake_pos2['x'] = width - 10
-            
-    elif snake_pos["x"] > width - 10:
-        snake_pos["x"] = 0
-    if snake_pos2["x"] > width - 10:
-        snake_pos2["x"] = 0
-            
-    elif snake_pos["y"] < -snake_size[1]:
-        snake_pos['y'] = height - 10
-    if snake_pos2["y"] < -snake_size2[1]:
-        snake_pos2['y'] = height - 10
-            
-    elif snake_pos["y"] > height - 10:
-        snake_pos["y"] = 0
-    if snake_pos2["y"] > height - 10:
-        snake_pos2["y"] = 0
-                    
-            
+        if snake_pos["x"] < -snake_size[0]:
+            snake_pos['x'] = width - 10
+        if snake_pos2["x"] < -snake_size2[0]:
+            snake_pos2['x'] = width - 10
+                
+        elif snake_pos["x"] > width - 10:
+            snake_pos["x"] = 0
+        if snake_pos2["x"] > width - 10:
+            snake_pos2["x"] = 0
+                
+        elif snake_pos["y"] < -snake_size[1]:
+            snake_pos['y'] = height - 10
+        if snake_pos2["y"] < -snake_size2[1]:
+            snake_pos2['y'] = height - 10
+                
+        elif snake_pos["y"] > height - 10:
+            snake_pos["y"] = 0
+        if snake_pos2["y"] > height - 10:
+            snake_pos2["y"] = 0
+
+    last_frame2 = display.copy()
+    
     pygame.display.update()
-    clock.tick(30)  #ограничение фпс
+    clock.tick(30)
+    if game_end2 == False:
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                    
+            bg_img = pygame.transform.scale(bg_img, (width, height))
+            display.blit(last_frame, (0, 0)) 
+            display.blit(dark_bg, (0, 0)) 
+
+
+            
+            game_over_text = font_menu.render("Game Over", True, (245,245,245))
+            score_text1 = font.render(f"Blue Score: {apple_eaten1}", True, (0,0,200))
+            score_text2 = font.render(f"Red Score: {apple_eaten2}", True, (200,0,0))
+            
+            display.blit(game_over_text, (width//2 - game_over_text.get_width()//2, height//2 - 100))
+            display.blit(score_text1, (width//2 - 200 - score_text1.get_width()//2, height//2 + 10))
+            display.blit(score_text2, (width//2 + 200 - score_text2.get_width()//2, height//2 + 10))
+            pygame.display.update()
+
+
+    
 pygame.quit()
