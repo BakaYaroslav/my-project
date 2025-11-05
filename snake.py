@@ -70,17 +70,18 @@ apple_pos = {
     'y': round(random.randrange(0, height - snake_size[1]) / 10)* 10,
 
 }
-        
 font_menu = pygame.font.SysFont("Arial", 48)
 font_color = (245, 245, 245)
 
 player1_img = pygame.image.load(r"C:\edits\Python\images menu\player1.png").convert_alpha()
 player2_img = pygame.image.load(r"C:\edits\Python\images menu\player2.png").convert_alpha()
 exit_img = pygame.image.load(r"C:\edits\Python\images menu\exit.png").convert_alpha()
+bg_img = pygame.image.load(r"C:\edits\Python\images menu\bgmenu.png").convert_alpha()
 
 player1_rect = player1_img.get_rect(center=(width//2, 150))
 player2_rect = player2_img.get_rect(center=(width//2, 250))
 exit_rect = exit_img.get_rect(center=(width//2, 350))
+
 
 
 font = pygame.font.SysFont("Arial", 24,)
@@ -92,8 +93,9 @@ font_menu = pygame.font.SysFont("Arial", 48)
 run_menu = True
 while run_menu:
      
-    display.fill((0, 0, 0))  # Черный фон 
-    text_surface = font_menu.render("Menu Snake Game", True, font_color)
+    bg_img = pygame.transform.scale(bg_img, (width, height))
+    display.blit(bg_img, (0, 0))
+    text_surface = font_menu.render("The Snake Game", True, font_color)
     display.blit(player1_img, player1_rect)  # координати для кнопки
     display.blit(player2_img, player2_rect)  # координати для кнопки
     display.blit(exit_img, exit_rect)  # координати для кнопки
@@ -353,9 +355,12 @@ while game_end2:
             apple_pos["y"],
             apple_size[0],
             apple_size[1]])
-        '''text = (f"Apples: {apple_eaten1}   L: {len(snake_tails)}   Apples2: {apple_eaten2}   L2: {len(snake_tails2)}")
-        text_surface = font.render(text, True, (245,245,245)) # белый цвет текста
-        display.blit(text_surface, (10, 10))'''
+        text1 = (f"Apples: {apple_eaten1}   L: {len(snake_tails)}")
+        text2 = (f"Apples: {apple_eaten2}   L: {len(snake_tails2)}")
+        text_surface = font.render(text1, True, (0,0,155)) # синий цвет текста
+        text_surface2 = font.render(text2, True, (155,0,0)) # красный цвет текста
+        display.blit(text_surface2, (440, 10))
+        display.blit(text_surface, (30, 10))
 
         # проверка змейка на той ли позиции что и яблоко
         ate_by_p1 = (snake_pos["x"] == apple_pos['x'] and snake_pos["y"] == apple_pos['y'])
@@ -373,9 +378,7 @@ while game_end2:
                 'x': round(random.randrange(0, width - snake_size[0]) / 10) * 10,
                 'y': round(random.randrange(0, height - snake_size[1]) / 10) * 10,
                 }
-            if [apple_pos['x'], apple_pos['y']] not in snake_tails and (apple_pos['x'] != snake_pos['x'] or apple_pos['y'] != snake_pos['y']):
-                [apple_pos['x'], apple_pos['y']] not in snake_tails2 and (apple_pos['x'] != snake_pos2['x'] or apple_pos['y'] != snake_pos2['y'])
-                pass
+
 
 
         # Player 1: самозіткнення + зіткнення з player2
