@@ -20,7 +20,7 @@ exit_img = pygame.image.load("C:\edits\Python\images menu\exit.png").convert_alp
 run_menu = True
 while run_menu:
     
-    display.fill((0, 0, 0))  # Черный фон 
+    
     text_surface = font_menu.render("Menu Snake Game", True, font_color)
     display.blit(player1_img, (width//4.5, 150))  # координати для кнопки
     display.blit(player2_img, (width//6, 250))  # координати для кнопки
@@ -37,4 +37,5 @@ while run_menu:
     pygame.display.update()
         
 pygame.quit()       
+
     
