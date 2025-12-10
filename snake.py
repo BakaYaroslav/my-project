@@ -22,7 +22,7 @@ colors = {
     "bg2":(162, 209, 73),  # темно-з
     "snake_head": (0, 0, 255),   # синий
     "snake_tall": (0, 100, 255),   # более темный синий
-    "snake_tall2": (240, 0, 0),   # красный
+    "snake_tall2": (200, 0, 0),   # красный
     "snake_head2": (200, 0, 0),   # более темный красный
     "apple": (255, 0, 0,)    # красный
 }
@@ -126,17 +126,22 @@ while run_menu:
                     run_menu = False
                     game_end = True
                 elif player2_rect.collidepoint(event.pos): 
-                    run_menu = False
+                    pause = False
                     game_end2 = True
                 elif exit_rect.collidepoint(event.pos):
                     run_menu = False
                     pygame.quit()
                     quit()
-
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SCAPE:
+                        pause = False
+                        game_end = True
+                
+                
     pygame.display.update()
     clock.tick(30)
             
-'''while pause:
+while pause:
     bg_img = pygame.transform.scale(bg_img, (width, height))
     display.blit(bg_img, (0, 0))
     text_surface = font_menu.render("Pause", True, font_color)
@@ -146,7 +151,7 @@ while run_menu:
     display.blit(text_surface, (width//4, 25))  # координати для тексту    
     
     pygame.display.update()
-    clock.tick(30)'''
+    clock.tick(30)
 
 while game_end:
 
@@ -160,7 +165,7 @@ while game_end:
         if event.type == pygame.QUIT:
             game_end = False
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RETURN:
+            if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                 pause = not pause
             elif not pause:
                 if event.type == pygame.KEYDOWN:
@@ -253,7 +258,12 @@ while game_end:
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
-    
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE: 
+                pause = False
+                game_end = True 
+                
         if event.type == pygame.MOUSEBUTTONDOWN:
             if player1_rect.collidepoint(event.pos): # collidepoint проверяет нажатие на кнопку
                 pause = False
@@ -267,10 +277,8 @@ while game_end:
                 pygame.quit()
                 quit()
                 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE: 
-                pause = False
-                game_end = True
+
+
             
         bg_img = pygame.transform.scale(last_frame, (width, height))
         display.blit(bg_img, (0, 0))
@@ -278,7 +286,7 @@ while game_end:
         display.blit(player1_img, player1_rect)  # координати для кнопки
         display.blit(player2_img, player2_rect)  # координати для кнопки
         display.blit(exit_img, exit_rect)  # координати для кнопки
-        display.blit(text_surface, (width//2, 25))  # координати для тексту              
+        display.blit(text_surface, (width//2.5, 25))  # координати для тексту              
 
 
     if(snake_pos["x"] < 0 or snake_pos["x"] > width -20 or
@@ -502,7 +510,6 @@ while game_end2:
             display.blit(dark_bg, (0, 0)) 
 
 
-            
             game_over_text = font_menu.render("Game Over", True, (245,245,245))
             score_text1 = font.render(f"Blue Score: {apple_eaten1}", True, (0,0,200))
             score_text2 = font.render(f"Red Score: {apple_eaten2}", True, (200,0,0))
@@ -511,7 +518,5 @@ while game_end2:
             display.blit(score_text1, (width//2 - 200 - score_text1.get_width()//2, height//2 + 10))
             display.blit(score_text2, (width//2 + 200 - score_text2.get_width()//2, height//2 + 10))
             pygame.display.update()
-
-
     
 pygame.quit()
